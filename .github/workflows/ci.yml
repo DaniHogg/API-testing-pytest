@@ -1,0 +1,57 @@
+name: API Tests CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e .
+
+      - name: Run tests
+        env:
+          BASE_URL: https://qa-portfolio-api.onrender.com
+        run: |
+          pytest \
+            --json-report \
+            --json-report-file=report.json \
+            -v
+
+      - name: Upload JSON report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-pytest-json
+          path: report.json
+
+      - name: Notify live site
+        if: always() && github.event_name == 'push' && secrets.LIVE_SITE_TOKEN != ''
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.LIVE_SITE_TOKEN }}
+          repository: DaniHogg/qa-portfolio-livesite
+          event-type: portfolio-results-ready
+          client-payload: |
+            {
+              "source_repo": "${{ github.repository }}",
+              "source_workflow": "ci.yml",
+              "source_run_id": "${{ github.run_id }}",
+              "source_run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "source_branch": "${{ github.ref_name }}",
+              "source_commit_sha": "${{ github.sha }}",
+              "source_artifact": "api-pytest-json"
+            }

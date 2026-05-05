@@ -9,6 +9,7 @@ description = "Python-based API testing repository"
 dependencies = [
     "requests",
     "pytest",
+    "pytest-json-report",
 ]
 
 [tool.pytest.ini_options]
@@ -16,3 +17,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+markers = [
+    "smoke: core happy-path checks that must always pass",
+    "regression: broader coverage including error and edge-case paths",
+]
