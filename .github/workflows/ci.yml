@@ -39,7 +39,8 @@ jobs:
           path: report.json
 
       - name: Notify live site
-        if: always() && github.event_name == 'push' && secrets.LIVE_SITE_TOKEN != ''
+        if: always() && github.event_name == 'push'
+        continue-on-error: true
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.LIVE_SITE_TOKEN }}
