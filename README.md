@@ -1,6 +1,6 @@
 # API Testing
 
-This repository contains Python-based API tests.
+This repository contains Python-based API tests against the deployed QA portfolio backend.
 
 ## Setup
 
@@ -13,6 +13,8 @@ This repository contains Python-based API tests.
    ```bash
    pytest
    ```
+
+The default target is the Render-hosted backend at `https://qa-portfolio-api.onrender.com`. Override `BASE_URL` if you want to point the suite at a local or alternate environment.
 
 ## Project Structure
 
