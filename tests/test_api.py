@@ -93,3 +93,21 @@ def test_filter_todos_by_completed(base_url):
     assert isinstance(todos, list)
     assert len(todos) >= 1
     assert all(t["completed"] is True for t in todos)
+
+
+@pytest.mark.regression
+def test_get_nonexistent_user_returns_404(base_url):
+    """Negative: requesting an unknown user id should return not found."""
+    response = requests.get(f"{base_url}/users/99999")
+    assert response.status_code == 404
+    body = response.json()
+    assert isinstance(body.get("detail"), str)
+
+
+@pytest.mark.regression
+def test_filter_posts_by_unknown_user_returns_empty_list(base_url):
+    """Edge: filtering by a non-existent user should return an empty list, not an error."""
+    response = requests.get(f"{base_url}/posts", params={"userId": 99999})
+    posts = _assert_json_response(response, 200)
+    assert isinstance(posts, list)
+    assert posts == []
