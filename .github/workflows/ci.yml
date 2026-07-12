@@ -24,11 +24,18 @@ jobs:
       - name: Install dependencies
         run: pip install -e .
 
-      - name: Run tests
+      - name: Run smoke tests (fast)
         env:
           BASE_URL: https://qa-portfolio-api.onrender.com
         run: |
-          pytest \
+          pytest -m smoke -n auto -v
+
+      - name: Run regression tests (full)
+        env:
+          BASE_URL: https://qa-portfolio-api.onrender.com
+        run: |
+          pytest -m regression \
+            -n auto \
             --json-report \
             --json-report-file=report.json \
             -v

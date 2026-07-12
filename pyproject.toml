@@ -10,6 +10,8 @@ dependencies = [
     "requests",
     "pytest",
     "pytest-json-report",
+    "jsonschema",
+    "pytest-xdist",
 ]
 
 [tool.pytest.ini_options]
